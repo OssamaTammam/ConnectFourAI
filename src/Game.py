@@ -39,6 +39,7 @@ class Game:
 
                         winner = self.board.checkWinningMove()
                         if winner:
+                            self.gui.drawBoard()
                             self.gui.renderWinningScreen(winner)
                             self.board.gameOver = True
                     else:
@@ -49,6 +50,7 @@ class Game:
 
                         winner = self.board.checkWinningMove()
                         if winner:
+                            self.gui.drawBoard()
                             self.gui.renderWinningScreen(winner)
                             self.board.gameOver = True
 

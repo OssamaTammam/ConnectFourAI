@@ -85,6 +85,7 @@ class GUI:
         pygame.display.update()
 
     def renderWinningScreen(self, player):
+        pygame.display.update()
         if player == 1:
             label = self.font.render("Player 1 wins!!", 1, GUI.RED)
         else:

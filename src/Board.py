@@ -56,8 +56,6 @@ class Board:
                     ):
                         return piece
 
-        return 0
-
         # check for positive slope win
         for col in range(self.maxCols - 3):
             for row in range(self.maxRows - 3):
@@ -81,3 +79,5 @@ class Board:
                         and self.layout[row - 3][col + 3] == piece
                     ):
                         return piece
+
+        return 0
