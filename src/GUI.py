@@ -69,6 +69,25 @@ class GUI:
                         self.radius,
                     )
 
+        oneScore = self.font.render(f"Red: {self.board.oneScore}", True, GUI.RED)
+        twoScore = self.font.render(f"Yellow: {self.board.twoScore}", True, GUI.YELLOW)
+
+        scoreRectRed = oneScore.get_rect()
+        scoreRectYellow = twoScore.get_rect()
+        scoreRectRed.center = (self.width // 4, self.squareSize // 2)
+        scoreRectYellow.center = (
+            3 * self.width // 4,
+            self.squareSize // 2,
+        )
+
+        self.screen.blit(oneScore, scoreRectRed)
+        self.screen.blit(twoScore, scoreRectYellow)
+
+        if self.board.isBoardFull():
+            pygame.draw.rect(
+                self.screen, GUI.BLACK, (0, 0, self.width, self.squareSize)
+            )
+
         pygame.display.update()
 
     def mouseMotion(self, event, turn):
@@ -88,7 +107,9 @@ class GUI:
         pygame.display.update()
         if player == 1:
             label = self.font.render("Player 1 wins!!", 1, GUI.RED)
-        else:
+        elif player == 2:
             label = self.font.render("Player 2 wins!!", 1, GUI.YELLOW)
+        else:
+            label = self.font.render("TIE", 1, GUI.BLUE)
         self.screen.blit(label, (40, 10))
         pygame.display.update()

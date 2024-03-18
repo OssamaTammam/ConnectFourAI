@@ -1,5 +1,3 @@
-from Board import Board
-from GUI import GUI
 from Game import Game
 
 

@@ -37,25 +37,23 @@ class Game:
 
                         self.board.dropPiece(col, 1)
 
-                        winner = self.board.checkWinningMove()
-                        if winner:
-                            self.gui.drawBoard()
-                            self.gui.renderWinningScreen(winner)
-                            self.board.gameOver = True
+                        self.board.calculateScores()
                     else:
                         posx = event.pos[0]
                         col = int(math.floor(posx / self.gui.squareSize))
 
                         self.board.dropPiece(col, 2)
 
-                        winner = self.board.checkWinningMove()
-                        if winner:
-                            self.gui.drawBoard()
-                            self.gui.renderWinningScreen(winner)
-                            self.board.gameOver = True
+                        self.board.calculateScores()
 
                     self.turn += 1
                     self.turn = self.turn % 2
 
-                    if self.board.isGameOver():
+                    if self.board.isBoardFull():
+                        winner = self.board.calcWinner()
+                        self.gui.drawBoard()
+                        self.gui.renderWinningScreen(winner)
+                        print(self.board.oneScore)
+                        print(self.board.twoScore)
+                        self.board.gameOver = True
                         pygame.time.wait(3000)

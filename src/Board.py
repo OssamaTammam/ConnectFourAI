@@ -7,6 +7,9 @@ class Board:
         self.maxCols = maxCols
         self.layout = np.zeros((maxRows, maxCols))
         self.gameOver = False
+        self.oneScore = 0
+        self.twoScore = 0
+        self.scoredSequences = set()
 
     def dropPiece(self, col, piece) -> None:
         if self.isValidLocation(col):
@@ -29,8 +32,9 @@ class Board:
     def printBoard(self):
         print(np.flip(self.layout, 0))
 
-    def checkWinningMove(self):
+    def calculateScores(self):
         pieces = (1, 2)
+        sequences = set()
 
         # check for horizontal win
         for col in range(self.maxCols - 3):
@@ -42,7 +46,14 @@ class Board:
                         and self.layout[row][col + 2] == piece
                         and self.layout[row][col + 3] == piece
                     ):
-                        return piece
+                        # store that sequence
+                        sequence = tuple((row, col + i) for i in range(4))
+                        sequences.add(sequence)
+                        if sequence not in self.scoredSequences:
+                            if piece == 1:
+                                self.oneScore += 1
+                            else:
+                                self.twoScore += 1
 
         # check for vertical win
         for col in range(self.maxCols):
@@ -54,7 +65,14 @@ class Board:
                         and self.layout[row + 2][col] == piece
                         and self.layout[row + 3][col] == piece
                     ):
-                        return piece
+                        # store that sequence
+                        sequence = tuple((row + i, col) for i in range(4))
+                        sequences.add(sequence)
+                        if sequence not in self.scoredSequences:
+                            if piece == 1:
+                                self.oneScore += 1
+                            else:
+                                self.twoScore += 1
 
         # check for positive slope win
         for col in range(self.maxCols - 3):
@@ -66,7 +84,14 @@ class Board:
                         and self.layout[row + 2][col + 2] == piece
                         and self.layout[row + 3][col + 3] == piece
                     ):
-                        return piece
+                        # store that sequence
+                        sequence = tuple((row + i, col + i) for i in range(4))
+                        sequences.add(sequence)
+                        if sequence not in self.scoredSequences:
+                            if piece == 1:
+                                self.oneScore += 1
+                            else:
+                                self.twoScore += 1
 
         # check for negative slope win
         for col in range(self.maxCols - 3):
@@ -78,6 +103,24 @@ class Board:
                         and self.layout[row - 2][col + 2] == piece
                         and self.layout[row - 3][col + 3] == piece
                     ):
-                        return piece
+                        # store that sequence
+                        sequence = tuple((row - i, col + i) for i in range(4))
+                        sequences.add(sequence)
+                        if sequence not in self.scoredSequences:
+                            if piece == 1:
+                                self.oneScore += 1
+                            else:
+                                self.twoScore += 1
 
-        return 0
+        self.scoredSequences.update(sequences)
+
+    def calcWinner(self):
+        if self.oneScore == self.twoScore:
+            return 3
+        elif self.oneScore > self.twoScore:
+            return 1
+        else:
+            return 2
+
+    def isBoardFull(self):
+        return ~np.any(self.layout == 0)
