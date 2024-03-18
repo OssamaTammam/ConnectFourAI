@@ -9,34 +9,36 @@ class GUI:
 
     def __init__(self, board, squareSize=100):
         self.board = board
+        self.squareSize = squareSize
         self.width = board.maxCols * self.squareSize
-        self.height = (self.maxRows + 1) * self.squareSize
+        self.height = (self.board.maxRows + 1) * self.squareSize
         self.size = (self.width, self.height)
         self.radius = int(self.squareSize / 2 - 5)
-        self.self.screen = pygame.display.set_mode(self.size)
+        self.screen = pygame.display.set_mode(self.size)
+        self.font = pygame.font.SysFont("monospace", 75)
 
     def drawBoard(self):
         for col in range(self.board.maxCols):
             for row in range(self.board.maxRows):
                 pygame.draw.rect(
-                    self.self.screen,
+                    self.screen,
                     GUI.BLUE,
                     (
-                        col * self.self.squareSize,
-                        row * self.self.squareSize + self.self.squareSize,
-                        self.self.squareSize,
-                        self.self.squareSize,
+                        col * self.squareSize,
+                        row * self.squareSize + self.squareSize,
+                        self.squareSize,
+                        self.squareSize,
                     ),
                 )
                 pygame.draw.circle(
-                    self.self.screen,
+                    self.screen,
                     self.BLACK,
                     (
-                        int(col * self.self.squareSize + self.self.squareSize / 2),
+                        int(col * self.squareSize + self.squareSize / 2),
                         int(
-                            row * self.self.squareSize
-                            + self.self.squareSize
-                            + self.self.squareSize / 2
+                            row * self.squareSize
+                            + self.squareSize
+                            + self.squareSize / 2
                         ),
                     ),
                     self.radius,
@@ -69,6 +71,23 @@ class GUI:
 
         pygame.display.update()
 
-    # TODO: render the screen
-    def render(self):
-        pass
+    def mouseMotion(self, event, turn):
+        pygame.draw.rect(self.screen, GUI.BLACK, (0, 0, self.width, self.squareSize))
+        posx = event.pos[0]
+        if turn == 0:
+            pygame.draw.circle(
+                self.screen, GUI.RED, (posx, int(self.squareSize / 2)), self.radius
+            )
+        else:
+            pygame.draw.circle(
+                self.screen, GUI.YELLOW, (posx, int(self.squareSize / 2)), self.radius
+            )
+        pygame.display.update()
+
+    def renderWinningScreen(self, player):
+        if player == 1:
+            label = self.font.render("Player 1 wins!!", 1, GUI.RED)
+        else:
+            label = self.font.render("Player 2 wins!!", 1, GUI.YELLOW)
+        self.screen.blit(label, (40, 10))
+        pygame.display.update()
