@@ -3,6 +3,7 @@ import pygame
 import math
 from GUI import GUI
 from Board import Board
+from AI import AI
 
 
 class Game:
@@ -15,6 +16,7 @@ class Game:
     # main game loop
     def refresh(self):
         while not self.board.isGameOver():
+            self.board.printBoard()
             self.gui.drawBoard()
             for event in pygame.event.get():
                 # quit game
