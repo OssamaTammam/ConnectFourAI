@@ -139,3 +139,11 @@ class Board:
 
     def isBoardFull(self):
         return ~np.any(self.layout == 0)
+
+    def getOneScore(self):
+        self.calculateScores()
+        return self.oneScore
+
+    def getTwoScore(self):
+        self.calculateScores()
+        return self.twoScore

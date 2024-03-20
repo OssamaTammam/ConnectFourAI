@@ -43,6 +43,7 @@ class Game:
 
                         self.turn += 1
                         self.turn = self.turn % 2
+                        self.board.printBoard()
 
                 elif self.turn == 1:
                     col, minMaxScore = AI.minMaxPruning(
@@ -55,6 +56,7 @@ class Game:
 
                     self.turn += 1
                     self.turn = self.turn % 2
+                    self.board.printBoard()
 
                 if self.board.isBoardFull():
                     winner = self.board.calcWinner()
@@ -64,5 +66,3 @@ class Game:
                     print(self.board.twoScore)
                     self.board.gameOver = True
                     pygame.time.wait(3000)
-
-                self.board.printBoard()

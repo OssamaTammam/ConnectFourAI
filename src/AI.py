@@ -24,12 +24,19 @@ class AI:
         return len(AI.getValidMoves(board)) == 0
 
     @staticmethod
+    def evaluateBoard(board):
+        aiScore = board.getTwoScore()
+        userScore = board.getOneScore()
+        score = aiScore - userScore
+        return score
+
+    @staticmethod
     def minMaxPruning(board, depth, alpha, beta, maximizingPlayer):
         validMoves = AI.getValidMoves(board)
 
         # TODO: heuristic evaluation needs to be added to support new game mechanics
         if AI.isTerminal(board) or depth == 0:
-            return None, -inf
+            return None, AI.evaluateBoard(board)
 
         if maximizingPlayer:
             utility = -inf
