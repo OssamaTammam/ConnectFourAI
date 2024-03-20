@@ -1,15 +1,72 @@
+from math import inf
+from random import choice
+
+
 class AI:
+    AI_PIECE = 2
+    USER_PIECE = 1
+
     def __init__(self, board):
         self.board = board
 
-    def getValidMoves(self):
+    @staticmethod
+    def getValidMoves(board):
         validLocations = []
 
-        for col in range(self.board.maxCols):
-            if self.board.isValidLocation(col):
+        for col in range(board.maxCols):
+            if board.isValidLocation(col):
                 validLocations.append(col)
 
         return validLocations
 
-    def minMax(depth, alpha, beta, maximizingPlayer):
-        pass
+    @staticmethod
+    def isTerminal(board):
+        return len(AI.getValidMoves(board)) == 0
+
+    @staticmethod
+    def minMaxPruning(board, depth, alpha, beta, maximizingPlayer):
+        validMoves = AI.getValidMoves(board)
+
+        # TODO: heuristic evaluation needs to be added to support new game mechanics
+        if AI.isTerminal(board) or depth == 0:
+            return None, -inf
+
+        if maximizingPlayer:
+            utility = -inf
+            column = choice(validMoves)
+
+            for col in validMoves:
+                boardCopy = board.copy()
+
+                boardCopy.dropPiece(col, AI.AI_PIECE)
+                newScore = AI.minMaxPruning(boardCopy, depth - 1, alpha, beta, False)[1]
+
+                if newScore > utility:
+                    utility = newScore
+                    column = col
+
+                alpha = max(alpha, utility)
+                if alpha >= beta:
+                    break
+
+            return column, utility
+
+        else:
+            utility = inf
+            column = choice(validMoves)
+
+            for col in validMoves:
+                boardCopy = board.copy()
+
+                boardCopy.dropPiece(col, AI.USER_PIECE)
+                newScore = AI.minMaxPruning(boardCopy, depth - 1, alpha, beta, False)[1]
+
+                if newScore < utility:
+                    utility = newScore
+                    column = col
+
+                beta = min(alpha, utility)
+                if alpha >= beta:
+                    break
+
+            return column, utility

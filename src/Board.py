@@ -11,6 +11,11 @@ class Board:
         self.twoScore = 0
         self.scoredSequences = set()
 
+    def copy(self):
+        newBoard = Board()
+        newBoard.layout = np.array(self.layout)
+        return newBoard
+
     def __hash__(self) -> int:
         return self.layout.tobytes()
 
