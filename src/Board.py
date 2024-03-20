@@ -14,6 +14,7 @@ class Board:
     def copy(self):
         newBoard = Board()
         newBoard.layout = np.array(self.layout)
+        newBoard.calculateScores()
         return newBoard
 
     def __hash__(self) -> int:

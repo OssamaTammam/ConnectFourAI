@@ -1,5 +1,6 @@
 from math import inf
 from random import choice
+from Tree import Tree, Node
 
 
 class AI:
@@ -8,6 +9,7 @@ class AI:
 
     def __init__(self, board):
         self.board = board
+        self.minMaxTree = Tree()
 
     @staticmethod
     def getValidMoves(board):
@@ -30,22 +32,26 @@ class AI:
         score = aiScore - userScore
         return score
 
-    @staticmethod
-    def minMaxPruning(board, depth, alpha, beta, maximizingPlayer):
-        validMoves = AI.getValidMoves(board)
+    def minMaxPruning(self, node, depth, alpha, beta, maximizingPlayer):
+        if self.minMaxTree.root is None:
+            self.minMaxTree.root = node
 
-        if AI.isTerminal(board) or depth == 0:
-            return None, AI.evaluateBoard(board)
+        validMoves = AI.getValidMoves(node.board)
+
+        if AI.isTerminal(node.board) or depth == 0:
+            return None, AI.evaluateBoard(node.board)
 
         if maximizingPlayer:
             utility = -inf
             column = choice(validMoves)
 
             for col in validMoves:
-                boardCopy = board.copy()
+                newNode = Node(node.board.copy())
 
-                boardCopy.dropPiece(col, AI.AI_PIECE)
-                newScore = AI.minMaxPruning(boardCopy, depth - 1, alpha, beta, False)[1]
+                newNode.board.dropPiece(col, AI.AI_PIECE)
+                node.insertChild(newNode)
+
+                newScore = self.minMaxPruning(newNode, depth - 1, alpha, beta, False)[1]
 
                 if newScore > utility:
                     utility = newScore
@@ -62,10 +68,12 @@ class AI:
             column = choice(validMoves)
 
             for col in validMoves:
-                boardCopy = board.copy()
+                newNode = Node(node.board.copy())
 
-                boardCopy.dropPiece(col, AI.USER_PIECE)
-                newScore = AI.minMaxPruning(boardCopy, depth - 1, alpha, beta, False)[1]
+                newNode.board.dropPiece(col, AI.USER_PIECE)
+                node.insertChild(newNode)
+
+                newScore = self.minMaxPruning(newNode, depth - 1, alpha, beta, False)[1]
 
                 if newScore < utility:
                     utility = newScore
@@ -78,7 +86,7 @@ class AI:
             return column, utility
 
     @staticmethod
-    def minMaxWithoutPruning(board, depth, maximizingPlayer):
+    def minMaxWithoutPruning(self, board, depth, maximizingPlayer):
         validMoves = AI.getValidMoves(board)
 
         if AI.isTerminal(board) or depth == 0:
@@ -92,7 +100,7 @@ class AI:
                 boardCopy = board.copy()
 
                 boardCopy.dropPiece(col, AI.AI_PIECE)
-                newScore = AI.minMaxWithoutPruning(boardCopy, depth - 1, False)[1]
+                newScore = self.minMaxWithoutPruning(boardCopy, depth - 1, False)[1]
 
                 if newScore > utility:
                     utility = newScore
@@ -108,7 +116,7 @@ class AI:
                 boardCopy = board.copy()
 
                 boardCopy.dropPiece(col, AI.USER_PIECE)
-                newScore = AI.minMaxWithoutPruning(boardCopy, depth - 1, True)[1]
+                newScore = self.minMaxWithoutPruning(boardCopy, depth - 1, True)[1]
 
                 if newScore < utility:
                     utility = newScore

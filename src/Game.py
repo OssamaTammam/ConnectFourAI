@@ -4,6 +4,7 @@ import math
 from GUI import GUI
 from Board import Board
 from AI import AI
+from Tree import Node
 
 
 class Game:
@@ -12,6 +13,7 @@ class Game:
         self.board = Board()
         self.gui = GUI(self.board)
         self.turn = 0
+        self.ai = AI(self.board)
 
     # main game loop
     def refresh(self):
@@ -46,8 +48,8 @@ class Game:
                         self.board.printBoard()
 
                 elif self.turn == 1:
-                    col, minMaxScore = AI.minMaxPruning(
-                        self.board, 5, -math.inf, math.inf, True
+                    col, minMaxScore = self.ai.minMaxPruning(
+                        Node(self.board), 5, -math.inf, math.inf, True
                     )
                     # col, minMaxScore = AI.minMaxWithoutPruning(self.board, 5, True)
 
