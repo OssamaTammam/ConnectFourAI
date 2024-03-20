@@ -49,6 +49,7 @@ class Game:
                     col, minMaxScore = AI.minMaxPruning(
                         self.board, 5, -math.inf, math.inf, True
                     )
+                    # col, minMaxScore = AI.minMaxWithoutPruning(self.board, 5, True)
 
                     self.board.dropPiece(col, 2)
 

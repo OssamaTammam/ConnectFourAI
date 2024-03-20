@@ -34,7 +34,6 @@ class AI:
     def minMaxPruning(board, depth, alpha, beta, maximizingPlayer):
         validMoves = AI.getValidMoves(board)
 
-        # TODO: heuristic evaluation needs to be added to support new game mechanics
         if AI.isTerminal(board) or depth == 0:
             return None, AI.evaluateBoard(board)
 
@@ -75,5 +74,44 @@ class AI:
                 beta = min(alpha, utility)
                 if alpha >= beta:
                     break
+
+            return column, utility
+
+    @staticmethod
+    def minMaxWithoutPruning(board, depth, maximizingPlayer):
+        validMoves = AI.getValidMoves(board)
+
+        if AI.isTerminal(board) or depth == 0:
+            return None, AI.evaluateBoard(board)
+
+        if maximizingPlayer:
+            utility = -inf
+            column = choice(validMoves)
+
+            for col in validMoves:
+                boardCopy = board.copy()
+
+                boardCopy.dropPiece(col, AI.AI_PIECE)
+                newScore = AI.minMaxWithoutPruning(boardCopy, depth - 1, False)[1]
+
+                if newScore > utility:
+                    utility = newScore
+                    column = col
+
+            return column, utility
+
+        else:
+            utility = inf
+            column = choice(validMoves)
+
+            for col in validMoves:
+                boardCopy = board.copy()
+
+                boardCopy.dropPiece(col, AI.USER_PIECE)
+                newScore = AI.minMaxWithoutPruning(boardCopy, depth - 1, True)[1]
+
+                if newScore < utility:
+                    utility = newScore
+                    column = col
 
             return column, utility
