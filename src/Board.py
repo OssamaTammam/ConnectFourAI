@@ -11,6 +11,16 @@ class Board:
         self.twoScore = 0
         self.scoredSequences = set()
 
+    def __hash__(self) -> int:
+        return self.layout.tobytes()
+
+    def __eq__(self, __value: object) -> bool:
+        return np.all(self.board == __value.board)
+
+    def __getitem__(self, indices):
+        row, col = indices
+        return self.board[row][col]
+
     def dropPiece(self, col, piece) -> None:
         if self.isValidLocation(col):
             self.layout[self.getNextOpenRow(col)][col] = piece
